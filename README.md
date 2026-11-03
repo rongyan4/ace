@@ -155,6 +155,22 @@ results = ace_system.run(
 )
 ```
 
+### MoMa (China Mobile) API
+
+A `moma` provider is built in for the China Mobile MoMa OpenAI-compatible gateway (`https://vip.moma.cmecloud.cn/v1`).
+
+1. Set `MOMA_API_KEY` in `.env` (the endpoint can be overridden with `MOMA_BASE_URL`).
+2. Pass `--api_provider moma` plus the model id, e.g. `deepseek-v4.1-flash-1017`. `--model` sets the model for all three roles (generator/reflector/curator); the per-role `--*_model` flags still win if provided.
+
+```bash
+uv run python -m eval.finance.run \
+    --task_name finer \
+    --mode offline \
+    --save_path results \
+    --api_provider moma \
+    --model deepseek-v4.1-flash-1017
+```
+
 ## 💼 Finance Domain Example
 
 ### Training Script Usage
@@ -201,7 +217,7 @@ uv run python -m eval.finance.run \
 | `--save_path` | Directory to save results | Required |
 | `--initial_playbook_path` | Path to initial playbook | Optional |
 | `--mode` | Run mode: 'offline' for offline training with validation, 'online' for online training and testing on test split, 'eval_only' for evaluation only | `offline` |
-| `--api_provider` | API provider for LLM calls. Choose from ['sambanova', 'together', 'openai', 'commonstack'] | `sambanova` |
+| `--api_provider` | API provider for LLM calls. Choose from ['sambanova', 'together', 'openai', 'commonstack', 'moma'] | `sambanova` |
 | `--num_epochs` | Number of training epochs | 1 |
 | `--max_num_rounds` | Max reflection rounds for incorrect answers | 3 |
 | `--curator_frequency` | Run curator every N steps | 1 |
@@ -214,6 +230,7 @@ uv run python -m eval.finance.run \
 | `--generator_model` | Model for generator | `DeepSeek-V3.1` |
 | `--reflector_model` | Model for reflector | `DeepSeek-V3.1` |
 | `--curator_model` | Model for curator | `DeepSeek-V3.1` |
+| `--model` | Convenience override for generator/reflector/curator (per-role flags win) | `DeepSeek-V3.1` |
 | `--json_mode` | Enable JSON mode for structured output | False |
 | `--no_ground_truth` | Don't use ground truth in reflection | False |
 | `--use_bulletpoint_analyzer` | Enable bulletpoint analyzer for playbook deduplication and merging | False |

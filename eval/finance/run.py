@@ -30,16 +30,18 @@ def parse_args():
     
     # Model configuration
     parser.add_argument("--api_provider", type=str, default="sambanova",
-                        choices=["sambanova", "together", "openai", "commonstack"], help="API provider")
-    parser.add_argument("--generator_model", type=str, 
-                        default="DeepSeek-V3.1",
-                        help="Model for generator")
+                        choices=["sambanova", "together", "openai", "commonstack", "moma"], help="API provider")
+    parser.add_argument("--generator_model", type=str,
+                        default=None,
+                        help="Model for generator (default: DeepSeek-V3.1, or the --model value)")
     parser.add_argument("--reflector_model", type=str,
-                        default="DeepSeek-V3.1",
-                        help="Model for reflector")
+                        default=None,
+                        help="Model for reflector (default: DeepSeek-V3.1, or the --model value)")
     parser.add_argument("--curator_model", type=str,
-                        default="DeepSeek-V3.1",
-                        help="Model for curator")
+                        default=None,
+                        help="Model for curator (default: DeepSeek-V3.1, or the --model value)")
+    parser.add_argument("--model", type=str, default=None,
+                        help="Convenience override for all three roles; explicit --*_model flags win")
     
     # Training configuration
     parser.add_argument("--num_epochs", type=int, default=1,
@@ -91,7 +93,12 @@ def parse_args():
     parser.add_argument("--save_path", type=str, required=True,
                         help="Directory to save results")
     
-    return parser.parse_args()
+    args = parser.parse_args()
+    base_model = args.model or "DeepSeek-V3.1"
+    args.generator_model = args.generator_model or base_model
+    args.reflector_model = args.reflector_model or base_model
+    args.curator_model = args.curator_model or base_model
+    return args
 
 def load_data(data_path: str):
     """
